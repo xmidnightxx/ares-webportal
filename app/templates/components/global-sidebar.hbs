@@ -40,6 +40,17 @@
 {{/if}}
 
 
+<div class="sidebar-box">
+  <div class="sidebar-heading">
+      <h2>Newest Characters <i class="fa fa-users" aria-hidden="true"></i></h2>
+  </div>
+  {{#each model.recent_chars as |char|}}
+  {{char-icon-inline char=char}}
+  {{/each}}
+  <p>{{#link-to 'characters'}}All Characters{{/link-to}}</p>
+  
+</div>
+
 
 <div class="sidebar-box">
    <div class="sidebar-heading">

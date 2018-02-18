@@ -6,8 +6,6 @@
        
            <div class="row">
                <div class="col-md-6 col-sm-4 col-xs-4">
-                   <div class="site-title">{{#link-to 'home'}}{{mushName}}{{/link-to}}</div>
-                   <div class="site-subtitle">{{mushHost}} port {{mushPort}}</div>
                </div>
                <div class="col-md-6 col-sm-8 col-xs-8">
                   <div class="text-right user-bar">
@@ -40,20 +38,24 @@
      <div class="body-wrap">
  
        <div class="row">
+           {{#if hideSidebar}}
+           <div class="col-md-3">
+           &nbsp;
+           </div>
+           {{else}}
+           <div class="col-md-3">
+               <div class="sidebar-wrap">
+               {{global-sidebar model=sidebar}}
+               </div>
+           </div>
+           {{/if}}
+           
          <div class="col-md-9 body-container">
            {{flash-messages}}
            {{outlet}}
          </div>
                 
-         {{#if hideSidebar}}
-         <div class="col-md-3">
-         &nbsp;
-         </div>
-         {{else}}
-         <div class="col-md-3">
-             {{global-sidebar model=sidebar}}
-         </div>
-         {{/if}}
+         
         </div>
      </div>
  

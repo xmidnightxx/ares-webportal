@@ -3,6 +3,10 @@
             {{#link-to 'file' char.profile_image.folder char.profile_image.name}}
                 <img src="/game/uploads/{{char.profile_image.path}}" class="profile-image"/>
             {{/link-to}}
+            <br/>
+            <p class="profile-actor">Played By {{char.all_fields.actor}}</p>
+            <br/>
+                        
     {{else}}
         <img src="/game/uploads/theme_images/noicon.png" class="profile-image" />
     {{/if}}
@@ -12,36 +16,93 @@
 
         <div class="profile-box">
         <div class="profile-title">
-                    {{char.military_name}}
+            Character Brief
         </div>
         
-        {{#each char.demographics as |demo|}}
         <div class="row">
             <div class="col-sm-3">
-                    <b>{{demo.name}}</b> 
+                    <b>Name:</b> 
             </div>
             <div class="col-sm-9">
-                    {{demo.value}}
+                    {{char.all_fields.fullname}}
             </div>
         </div>
-        {{/each}}
-                
         
-        <div class="profile-divider">
-        </div>
-        
-        
-        {{#each char.groups as |group|}}
         <div class="row">
             <div class="col-sm-3">
-                    <b>{{group.name}}:</b> 
+                    <b>Nationality:</b> 
             </div>
             <div class="col-sm-9">
-                    {{group.value}}
+                    {{char.all_fields.nationality}}
             </div>
         </div>
-        {{/each}}
-
+        
+        <div class="row">
+            <div class="col-sm-3">
+                    <b>Age:</b> 
+            </div>
+            <div class="col-sm-9">
+                    {{char.all_fields.age}}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-3">
+                    <b>Position:</b> 
+            </div>
+            <div class="col-sm-9">
+                    {{char.all_fields.position}}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-3">
+                    <b>Rank:</b> 
+            </div>
+            <div class="col-sm-9">
+                    {{char.all_fields.rank}}
+            </div>
+        </div>
+        
+        <div class="profile-title">
+            Physical Stats
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-3">
+                    <b>Height:</b> 
+            </div>
+            <div class="col-sm-9">
+                    {{char.all_fields.height}}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-3">
+                    <b>Physique:</b> 
+            </div>
+            <div class="col-sm-9">
+                    {{char.all_fields.physique}}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-3">
+                    <b>Hair Color:</b> 
+            </div>
+            <div class="col-sm-9">
+                    {{char.all_fields.hair}}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-3">
+                    <b>Eye Color:</b> 
+            </div>
+            <div class="col-sm-9">
+                    {{char.all_fields.eyes}}
+            </div>
+        </div>
 
         {{#if char.handle}}
         
@@ -55,6 +116,16 @@
         </div>
         
         {{/if}}
+        
+        
+        <div class="row">
+            <div class="col-sm-12">
+                   <img  src="/game/uploads/flags/{{char.all_fields.flag}}.png" class="nation-flag"/>
+                   
+            </div>
+           
+        </div>
+        
         </div>
         
     </div>
