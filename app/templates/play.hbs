@@ -1,73 +1,204 @@
-{{title 'Web Client'}}
-<h1>Web Client</h1>
+{{title 'Play'}}
+ 
+ <h1>Play</h1>
 
-<p>The web client lets you play the game from a web browser.</p>
+ <div class="row">
+   <div class="col col-xs-12 col-md-3">
+     
+     <div class="play-sidebar">
+     
+     <button class="btn btn-default visible-sm visible-xs hidden-md" type="button" data-toggle="collapse" data-target="#sceneMenuCollapse" aria-expanded="false" aria-controls="sceneMenuCollapse">
+         <i class="fas fa-bars"></i>
+         {{#if anyNewActivity}}
+         <span class="label label-pill label-primary"> <i class="fa fa-flag" aria-label="New Activity"></i></span>
+         {{/if}}
+       </button>
 
-<div class="alert alert-warning">If you reload or leave this page, it will close your connection to the game.</div>
+       <div class="collapse in" id="sceneMenuCollapse">
 
-  
-{{#if showConnect}}
-        <button class="connectButton btn btn-success" {{action "connect"}}>Connect</button>
-{{/if}}
-{{#if showDisconnect}}
-        <button class="disconnectButton btn btn-danger" {{action "disconnect"}}>Disconnect</button>
-{{/if}}
-{{#if scrollPaused}}
-        <button class="btn-default btn" {{action "unpauseScroll"}}>Resume Scrolling</button>
-          <span class="label label-warning">Scrolling is paused!</span>
-{{else}}
-        <button class="btn-default btn" {{action "pauseScroll"}}>Pause Scrolling</button>
-{{/if}}
+       <p class="play-section-title">Scenes
+       
+       <LinkTo @route="scenes-live" @target="_blank">
+         <TooltipIcon @position="right" @message="Join Scene" @icon="fa fa-play-circle" />
+       </LinkTo>
 
-<div id="console">
-{{#each messages as |msg|}}
-{{{msg}}}
-{{/each}}
-</div>
+       <LinkTo @route="scene-create" @target="_blank">
+         <TooltipIcon @position="right" @message="Create Scene" @icon="fa fa-plus-circle" />
+       </LinkTo>
 
-<CmdBox @value={{text1}} @id="sendMsg" @cols="80" @rows="6" @onEnter={{action "sendMsg1"}} />
+       <LinkTo @route="scenes-unshared" @target="_blank">
+         <TooltipIcon @position="right" @message="Unshared Scenes" @icon="fa fa-share-square" />
+       </LinkTo>
+
+       <LinkTo @route="who" @target="_blank">
+         <TooltipIcon @position="right" @message="Who's Online" @icon="fa fa-users" />
+       </LinkTo>
+
+       </p>  
+
+         
+       {{#each model.scenes as |scene|}}
+         <a href="#" {{action 'switchScene' scene.id}}>
+           <div class="play-selector {{if (eq scene.id currentScene.id) 'play-selector-active' ''}}">
+               #{{scene.id}} - {{scene.location.name}} 
+               {{#if scene.is_unread}}
+                 <span class="label label-pill label-primary"> <i class="fa fa-flag" aria-label="New Activity"></i></span>
+               {{/if}}
+           </div>
+         </a>
+         <div class="play-hint">
+           {{#each scene.participants as |participant|}}
+             {{participant.name}}
+           {{/each}}
+         </div>
+         
+       {{/each}}
+       
+       
+       <p class="play-section-title">Private Messages  
+       <a href="#" {{action (mut showNewConversation) true}}>
+         <TooltipIcon @position="right" @message="New Conversation" @icon="fa fa-plus-circle" />
+       </a>
+        {{#if showAllPms}}
+        <a href="#" {{action (mut showAllPms) false}}>
+          <TooltipIcon @position="right" @message="Hide Inactive" @icon="fa fa-caret-square-up" />
+        </a>
+        {{else}}
+        <a href="#" {{action (mut showAllPms) true}}>
+          <TooltipIcon @position="right" @message="Show All" @icon="fa fa-caret-square-down" />
+        </a>
+        {{/if}}
+       </p>  
+        
+        {{#each sortedPageThreads as |channel|}}
+          {{#if (or channel.is_recent showAllPms)}}
+           <a href="#" {{action 'changeChannel' channel}}>
+            <div class="play-selector {{if (eq channel.key selectedChannel.key) 'play-selector-active' ''}}">                  
+              # {{channel.title}}
+              {{#if channel.muted}}
+                  <i class="fa fa-microphone-slash"></i>
+              {{/if}}
+              <span class="label label-pill label-primary">{{channel.new_messages}}</span>
+            </div>
+          </a>
+          {{/if}}
+        {{/each}}        
+        
+       <p class="play-section-title">Channels
+         
+         <a href="#" {{action (mut showAddChannel) true}}>
+           <TooltipIcon @position="right" @message="Add Channel" @icon="fa fa-plus-circle" />
+         </a>
+          {{#if showAllChannels}}
+          <a href="#" {{action (mut showAllChannels) false}}>
+            <TooltipIcon @position="right" @message="Hide Inactive" @icon="fa fa-caret-square-up" />
+          </a>
+          {{else}}
+          <a href="#" {{action (mut showAllChannels) true}}>
+            <TooltipIcon @position="right" @message="Show All" @icon="fa fa-caret-square-down" />
+          </a>
+          {{/if}}
+       </p>  
+              
+       {{#each sortedChannels as |channel|}}
+         {{#if channel.can_join}}
+           {{#if channel.enabled}}
+            {{#if (or channel.is_recent showAllChannels)}}
+             <a href="#" {{action 'changeChannel' channel}}>
+               <div class="play-selector {{if (eq channel.key selectedChannel.key) 'play-selector-active' ''}}">
+                    # {{channel.title}}
+                   {{#if channel.muted}}
+                       <i class="fa fa-microphone-slash"></i>
+                   {{/if}}                 
+                   <span class="label label-pill label-primary">{{channel.new_messages}}</span>
+               </div>
+               </a>
+             {{/if}}
+           {{/if}}
+         {{/if}}
+       {{/each}}
+                         
+     </div>
+    </div>
+     
+   </div>
+   
+   <div class="col col-xs-12 col-md-9">
+      
+      {{#if currentScene}}
+      <h3>Scene {{currentScene.id}} - {{currentScene.icdate}}
+          {{#if currentScene.title}}
+           - {{currentScene.title}}
+           {{/if}}
+       </h3>
+       {{/if}}
     
-<button class="sendButton btn-primary btn" {{action "sendMsg1"}}>Send Text</button>
-<button class="btn btn-default" {{action (mut showHistory1) true}}>
-  <TooltipIcon @position="right" @message="Command history." @icon="fa fa-history" />
-</button>
+       <LiveSceneControl @scene={{currentScene}} @locations={{model.locations}} @abilities={{model.abilities}} @places={{currentScene.places}} @scrollPaused={{scrollPaused}} @playerName={{currentUser.name}} @refresh={{action "refresh"}} @scrollDown={{action "scrollDown"}} @setScroll={{action "setScroll"}} />
+       
+       
+       {{#if selectedChannel}}
 
-{{#if scrollPaused}}
-   <span class="label label-warning">Scrolling is paused!</span>
-{{/if}}
+       {{#if selectedChannel.is_page}}
+       <h3>PMs with {{selectedChannel.title}}</h3>
+       {{else}}
+       <h3>{{selectedChannel.title}}</h3>
+       {{/if}}
+       {{/if}}
+       
+       
+         <ChatControl @channel={{selectedChannel}} @scrollPaused={{scrollPaused}} @playerName={{currentUser.name}} @refresh={{action "refresh"}} @scrollDown={{action "scrollDown"}} @setScroll={{action "setScroll"}} />
+       
+       
+       {{#if emptyPrompt}}
+       <div class="alert alert-info">Please join a channel or scene.</div>
+       {{/if}}
 
-<CmdBox @value={{text2}} @id="sendMsg2" @cols="80" @rows="6" @onEnter={{action "sendMsg2"}} />
+    </div>
+</div>
+  
+<BsModalSimple @title="Add Channel" @submitTitle="Done" @size={{null}} @fade={{false}} @closeTitle="Cancel" @open={{showAddChannel}}  @onHide={{action (mut showAddChannel) null}}>
+  
+  <table>
+    {{#each sortedChannels as |channel|}}
+      {{#if channel.can_join}}
+        {{#if (not channel.enabled)}}
+        <tr>
+          <td>
+          <b>{{channel.title}}</b> 
+          </td>
+          <td>
+            {{#if channel.desc}}
+            {{channel.desc}}
+            {{else}}
+            No description.
+            {{/if}}
+          </td>
+          <td>
+            <a href="#" {{action 'joinChannel' channel.title}} class="btn btn-primary">Join</a>
+          </td>
+        </tr>
+        {{/if}}
+      {{/if}}
+  {{/each}}
+  </table>
+</BsModalSimple>
+  
+<BsModalSimple @title="Start Conversation" @closeTitle="Cancel" @submitTitle="Start" @size={{null}} @fade={{false}} @open={{showNewConversation}} @onSubmit={{action "startConversation"}}  @onHide={{action (mut showNewConversation) null}}>
 
-<button class="sendButton2 btn-primary btn" {{action "sendMsg2"}}>Send Text</button>
-<button class="btn btn-default" {{action (mut showHistory2) true}}>
-  <TooltipIcon @position="right" @message="Command history." @icon="fa fa-history" />
-</button>
 
-<br><br>
-
-
-      <BsModalSimple @title="Load a Command" @closeTitle="Cancel" @size={{null}} @fade={{false}} @open={{showHistory1}} @onHide={{action (mut showHistory1) null}}>
-          
-          <p class="hint">Select a command to load into your input window. You can then edit it before sending it again.</p>
-          
-         {{#each history1 as |h|}}
-          <p><button class="btn btn-default" {{action "loadHistory1" h}}><i class="fa fa-redo" aria-hidden="true"></i></button> {{h}}</p>
-          {{/each}}
-          
-          
+         <div class="panel panel-default">
+           <div class="panel-body">
+             <b>To:</b><PowerSelectMultiple @selected={{newConversationList}} @options={{model.characters}} @searchField="name" @onchange={{action "conversationListChanged"}} as |char|>
+                 {{char.name}}
+               </PowerSelectMultiple>
       
-        </BsModalSimple>
-        
-        
-        <BsModalSimple @title="Load a Command" @closeTitle="Cancel" @size={{null}} @fade={{false}} @open={{showHistory2}} @onHide={{action (mut showHistory2) null}}>
-          
-           {{#each history2 as |h|}}
-            <p><button class="btn btn-default" {{action "loadHistory2" h}}><i class="fa fa-redo" aria-hidden="true"></i></button> {{h}}</p>
-            {{/each}}
-          
-          
+               <MarkdownEditor @text={{chatMessage}} @class="chat-box" @cols="80" @rows="6" @onEnter={{action "startConversation"}} />
       
-          </BsModalSimple>
-
+           </div>
+         </div>
+         
+         <FlashMessages />
+  </BsModalSimple>
+  
 
 {{outlet}}
